@@ -11,7 +11,8 @@
       "icon": "./assets/expo.icon",
       "infoPlist": {
         "NSCameraUsageDescription": "Ứng dụng dùng camera để quét mã QR vé sự kiện."
-      }
+      },
+      "bundleIdentifier": "com.eventapp.quanlysukien"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +22,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "permissions": ["CAMERA"],
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.eventapp.quanlysukien"
     },
     "web": {
       "output": "single",
@@ -31,8 +33,19 @@
       "expo-router",
       "expo-secure-store",
       [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
+          "userTrackingUsageDescription": "Ứng dụng dùng định danh quảng cáo để hiển thị quảng cáo phù hợp hơn với bạn."
+        }
+      ],
+      [
         "expo-camera",
-        { "cameraPermission": "Ứng dụng dùng camera để quét mã QR vé sự kiện." }
+        {
+          "cameraPermission": "Ứng dụng dùng camera để quét mã QR vé sự kiện.",
+          "recordAudioAndroid": false
+        }
       ],
       [
         "expo-splash-screen",
@@ -42,6 +55,16 @@
           "imageWidth": 76
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "8b498abc-2682-4db0-914e-b5423c2271cc"
+      }
+    }
   }
 }
