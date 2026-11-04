@@ -1,4 +1,7 @@
 # EventApp – Ứng dụng quản lý sự kiện
+#Link Báo cáo BTL: https://1drv.ms/w/c/a285388a2c142c54/IQDaOZcNHeoQT6UhNLrMxYx7AZ8iwTPtJuljO7pRU5qmp0U?e=1d8xtg
+# LINK VIDEO:
+# EventApp – Ứng dụng quản lý sự kiện (React Native + Expo + axios mock API + Google AdMob)
 
 Ứng dụng di động quản lý và tham gia sự kiện, dành cho 3 vai trò: **Người tham gia**, **Ban tổ chức** và **Admin**.
 Toàn bộ dữ liệu chạy bằng **mock API** (axios + adapter giả lập), không cần backend. Ứng dụng đã tích hợp
@@ -406,3 +409,25 @@ Lưu ý khi chia sẻ dự án:
 - Điểm danh khi mất mạng (lưu tạm rồi đồng bộ sau).
 - Nút "Khôi phục dữ liệu mẫu" ngay trong app.
 - Kiểm thử tự động cho logic đăng ký, trùng lịch và điểm danh.
+| Triệu chứng | Cách xử lý |
+|---|---|
+| `ENOSPC: no space left on device` khi cài | Chuyển cache sang ổ D: `npm config set cache D:\npm-cache`, và đặt `$env:TEMP = "D:\temp"`, `$env:TMP = "D:\temp"` |
+| Lỗi `EPERM` khi cài, `node_modules` hỏng | Đóng VS Code, xóa bằng `cmd /c rmdir /s /q node_modules` rồi `npm install` lại |
+| Gõ `eas` báo không nhận ra lệnh | Dùng `npx eas-cli ...`, hoặc thêm `D:\npm-global` vào PATH |
+| Mở bằng Expo Go bị lỗi module native | Bình thường, AdMob không chạy trên Expo Go. Dùng bản development build hoặc chạy web |
+| Không thấy quảng cáo | Đảm bảo đang dùng bản build EAS, điện thoại có mạng, đợi vài giây cho quảng cáo nạp |
+| Bấm nút mà chuyển trang ngay, không có quảng cáo | Bình thường nếu chưa đủ 3 phút kể từ lần hiện trước, hoặc quảng cáo chưa nạp xong |
+| Banner trắng hoặc trống | Thường do chưa nạp được quảng cáo (mạng yếu). Đợi hoặc mở lại app |
+| Điện thoại không tìm thấy máy tính | Kiểm tra cùng Wi-Fi, tắt tường lửa chặn, hoặc dùng `--tunnel` |
+| Lỗi cache Metro | `npx expo start -c` |
+| VS Code báo `INVALID_PLUGIN_IMPORT` trong `app.json` | Cảnh báo của tiện ích Expo Tools trong trình soạn thảo, có thể bỏ qua nếu build vẫn chạy |
+| `npm audit` báo 8 vulnerabilities | Bỏ qua, không chạy `npm audit fix --force` vì có thể làm hỏng phiên bản gói |
+
+Lưu ý thêm:
+- `google-services.json` **không cần** cho AdMob. Chỉ cần khi dùng Firebase (thông báo đẩy, đăng nhập Google...).
+- Khi phát hành lên Google Play, nên khai báo việc dùng quảng cáo trong mục **Data safety** và **App content** của Play Console.
+
+## Chưa có (có thể làm tiếp)
+
+Nhắc lịch bằng push notification (`expo-notifications`), lịch dạng tháng/tuần, chọn ảnh từ thư viện,
+thanh toán vé có phí, đánh giá sau sự kiện, quản lý địa điểm riêng.
