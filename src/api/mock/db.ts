@@ -27,6 +27,11 @@ const DAY = 86400000;
 const HOUR = 3600000;
 let counter = 100;
 export const uid = (prefix: string) => `${prefix}${++counter}`;
+/** Dùng cho persist.ts: lưu và khôi phục bộ đếm id để id mới không trùng id đã lưu. */
+export const getCounter = () => counter;
+export const setCounter = (n: number) => {
+  counter = n;
+};
 export const genCode = () => 'EVT-' + Math.random().toString(36).slice(2, 8).toUpperCase();
 const now = () => Date.now();
 const iso = (ms: number) => new Date(ms).toISOString();

@@ -6,6 +6,7 @@ import { Chip, Empty, ErrorView, Input } from '@/components/ui';
 import { colors } from '@/constants/theme';
 import { useApi } from '@/hooks/useApi';
 import { useDebounced } from '@/hooks/useDebounced';
+import { useT } from '@/i18n';
 
 const PRICE: { label: string; value?: EventQuery['price'] }[] = [
   { label: 'Mọi giá' }, { label: 'Miễn phí', value: 'free' }, { label: 'Có phí', value: 'paid' },
@@ -15,6 +16,7 @@ const WHEN: { label: string; value?: EventQuery['when'] }[] = [
 ];
 
 export default function Search() {
+  const t = useT();
   const [q, setQ] = useState('');
   const [area, setArea] = useState('');
   const [categoryId, setCategoryId] = useState<string | undefined>();
@@ -39,25 +41,25 @@ export default function Search() {
       renderItem={({ item }) => <EventCard event={item} />}
       ListHeaderComponent={
         <View style={{ gap: 12 }}>
-          <Input value={q} onChangeText={setQ} placeholder="Tìm theo tên, từ khóa, đơn vị tổ chức…" returnKeyType="search" />
-          <Input value={area} onChangeText={setArea} placeholder="Khu vực / địa điểm (VD: Hoàn Kiếm)" />
-          <Group title="Danh mục">
-            <Chip label="Tất cả" active={!categoryId} onPress={() => setCategoryId(undefined)} />
+          <Input value={q} onChangeText={setQ} placeholder={t('Tìm theo tên, từ khóa, đơn vị tổ chức…')} returnKeyType="search" />
+          <Input value={area} onChangeText={setArea} placeholder={t('Khu vực / địa điểm (VD: Hoàn Kiếm)')} />
+          <Group title={t('Danh mục')}>
+            <Chip label={t('Tất cả')} active={!categoryId} onPress={() => setCategoryId(undefined)} />
             {cats.data?.map((c) => (
               <Chip key={c.id} label={c.name} active={categoryId === c.id} onPress={() => setCategoryId(c.id)} />
             ))}
           </Group>
-          <Group title="Giá vé">
-            {PRICE.map((p) => <Chip key={p.label} label={p.label} active={price === p.value} onPress={() => setPrice(p.value)} />)}
+          <Group title={t('Giá vé')}>
+            {PRICE.map((p) => <Chip key={p.label} label={t(p.label)} active={price === p.value} onPress={() => setPrice(p.value)} />)}
           </Group>
-          <Group title="Thời gian">
-            {WHEN.map((w) => <Chip key={w.label} label={w.label} active={when === w.value} onPress={() => setWhen(w.value)} />)}
+          <Group title={t('Thời gian')}>
+            {WHEN.map((w) => <Chip key={w.label} label={t(w.label)} active={when === w.value} onPress={() => setWhen(w.value)} />)}
           </Group>
-          <Text style={{ color: colors.muted }}>{res.loading ? 'Đang tìm…' : `${res.data?.length ?? 0} sự kiện`}</Text>
+          <Text style={{ color: colors.muted }}>{res.loading ? t('Đang tìm…') : t('{n} sự kiện', { n: res.data?.length ?? 0 })}</Text>
           {!!res.error && <ErrorView message={res.error} onRetry={res.retry} />}
         </View>
       }
-      ListEmptyComponent={res.loading || res.error ? undefined : <Empty text="Không tìm thấy sự kiện nào" hint="Thử từ khóa khác hoặc bỏ bớt bộ lọc." />}
+      ListEmptyComponent={res.loading || res.error ? undefined : <Empty text={t('Không tìm thấy sự kiện nào')} hint={t('Thử từ khóa khác hoặc bỏ bớt bộ lọc.')} />}
     />
   );
 }

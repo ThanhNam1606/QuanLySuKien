@@ -9,6 +9,8 @@ import { colors } from '@/constants/theme';
 import { useApi } from '@/hooks/useApi';
 import { useAuth } from '@/store/authStore';
 import { EventItem } from '@/types';
+import { addEventToCalendar } from '@/utils/calendar';
+import { refreshReminders } from '@/utils/reminders';
 import { confirmAction, showMessage } from '@/utils/dialog';
 import { fmtPrice, fmtRange } from '@/utils/format';
 
@@ -42,6 +44,7 @@ export default function EventDetail() {
     setBusy(true);
     try {
       setData(await EventApi.register(event.id, force));
+      refreshReminders();
       showMessage('Đăng ký thành công', 'Vé điện tử của bạn đã có trong mục "Lịch của tôi".');
     } catch (e: any) {
       if (e.status === 409 && e.data?.conflict) {
@@ -58,6 +61,7 @@ export default function EventDetail() {
     confirmAction('Hủy đăng ký', `Bạn muốn hủy đăng ký "${event.title}"?`, async () => {
       try {
         await run(() => EventApi.cancelRegistration(event.id));
+        refreshReminders();
       } catch (e: any) {
         showMessage('Không hủy được', e.message);
       }
@@ -74,6 +78,14 @@ export default function EventDetail() {
   const openMap = () => {
     const q = event.latitude && event.longitude ? `${event.latitude},${event.longitude}` : encodeURIComponent(event.location);
     Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${q}`).catch(() => showMessage('Không mở được bản đồ'));
+  };
+
+  const addToCalendar = async () => {
+    try {
+      await addEventToCalendar(event);
+    } catch {
+      showMessage('Không mở được lịch', 'Hãy kiểm tra điện thoại đã cài ứng dụng Lịch chưa rồi thử lại.');
+    }
   };
 
   const share = () =>
@@ -129,6 +141,7 @@ export default function EventDetail() {
               <Button title="Chỉ đường" variant="soft" small onPress={openMap} style={{ flex: 1 }} />
               <Button title="Chia sẻ" variant="soft" small onPress={share} style={{ flex: 1 }} />
             </View>
+            {!!mine && <Button title="📅 Thêm vào lịch điện thoại" variant="soft" small onPress={addToCalendar} />}
           </Card>
 
           <View style={{ gap: 6 }}>

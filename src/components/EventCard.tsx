@@ -6,6 +6,7 @@ import { colors, radius } from '@/constants/theme';
 import { EventItem } from '@/types';
 import { dayOfMonth, fmtPrice, fmtTime, monthLabel } from '@/utils/format';
 import { StatusBadge } from './ui';
+import { useT } from '@/i18n';
 
 interface Props {
   event: EventItem;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function EventCard({ event, href, showStatus, footer }: Props) {
+  const t = useT();
   const router = useRouter();
   const left = event.capacity - event.registeredCount;
   const full = left <= 0;
@@ -40,7 +42,7 @@ export default function EventCard({ event, href, showStatus, footer }: Props) {
       <View style={{ padding: 14, gap: 6 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <Text style={s.category}>{event.categoryName}</Text>
-          {event.status === 'ongoing' && <Text style={s.live}>● Đang diễn ra</Text>}
+          {event.status === 'ongoing' && <Text style={s.live}>{t('● Đang diễn ra')}</Text>}
           {showStatus && <StatusBadge status={event.status} />}
         </View>
         <Text style={s.title} numberOfLines={2}>{event.title}</Text>
@@ -48,7 +50,7 @@ export default function EventCard({ event, href, showStatus, footer }: Props) {
         <View style={s.row}>
           <Text style={[s.price, event.price === 0 && { color: colors.success }]}>{fmtPrice(event.price)}</Text>
           <Text style={[s.meta, full && { color: colors.danger, fontWeight: '700' }]}>
-            {full ? 'Hết chỗ' : `Còn ${left}/${event.capacity} chỗ`}
+            {full ? t('Hết chỗ') : t('Còn {left}/{cap} chỗ', { left, cap: event.capacity })}
           </Text>
         </View>
         {footer}

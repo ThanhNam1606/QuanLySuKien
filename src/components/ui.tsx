@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { colors, radius, statusMeta } from '@/constants/theme';
 import { EventStatus } from '@/types';
+import { useT } from '@/i18n';
 
 // ---------------- Button ----------------
 interface ButtonProps {
@@ -97,8 +98,9 @@ export function Badge({ label, color, bg }: { label: string; color: string; bg: 
 }
 
 export function StatusBadge({ status }: { status: EventStatus }) {
+  const t = useT();
   const m = statusMeta[status];
-  return <Badge label={m.label} color={m.color} bg={m.bg} />;
+  return <Badge label={t(m.label)} color={m.color} bg={m.bg} />;
 }
 
 // ---------------- Trạng thái màn hình ----------------
@@ -120,10 +122,11 @@ export function Empty({ text, hint }: { text: string; hint?: string }) {
 }
 
 export function ErrorView({ message, onRetry }: { message: string; onRetry?: () => void }) {
+  const t = useT();
   return (
     <View style={s.center}>
       <Text style={{ color: colors.danger, textAlign: 'center', marginBottom: 12 }}>{message}</Text>
-      {onRetry && <Button title="Thử lại" variant="outline" small onPress={onRetry} />}
+      {onRetry && <Button title={t('Thử lại')} variant="outline" small onPress={onRetry} />}
     </View>
   );
 }
@@ -194,7 +197,7 @@ export function PromptModal({
   visible,
   title,
   placeholder,
-  submitLabel = 'Gửi',
+  submitLabel,
   initialValue = '',
   onCancel,
   onSubmit,
@@ -207,6 +210,7 @@ export function PromptModal({
   onCancel: () => void;
   onSubmit: (text: string) => Promise<void> | void;
 }) {
+  const t = useT();
   const [text, setText] = useState(initialValue);
   const [busy, setBusy] = useState(false);
 
@@ -239,8 +243,8 @@ export function PromptModal({
             style={[s.input, { minHeight: 90, textAlignVertical: 'top' }]}
           />
           <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'flex-end' }}>
-            <Button title="Hủy" variant="ghost" small onPress={onCancel} />
-            <Button title={submitLabel} small loading={busy} disabled={!text.trim()} onPress={submit} />
+            <Button title={t('Hủy')} variant="ghost" small onPress={onCancel} />
+            <Button title={submitLabel ?? t('Gửi')} small loading={busy} disabled={!text.trim()} onPress={submit} />
           </View>
         </View>
       </View>

@@ -4,9 +4,11 @@ import { colors } from '@/constants/theme';
 import { useApi } from '@/hooks/useApi';
 import { fmtDateTime } from '@/utils/format';
 import { Button, Card, Empty, ErrorView, Loading } from './ui';
+import { useT } from '@/i18n';
 
 /** Dùng chung cho Người tham gia và Ban tổ chức. */
 export default function NotificationList() {
+  const t = useT();
   const { data, loading, error, refreshing, refresh, retry, reload } = useApi(NotificationApi.list, []);
   if (loading) return <Loading />;
   if (error) return <ErrorView message={error} onRetry={retry} />;
@@ -27,12 +29,12 @@ export default function NotificationList() {
       ListHeaderComponent={
         unread > 0 ? (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-            <Text style={{ color: colors.muted }}>{unread} thông báo chưa đọc</Text>
-            <Button title="Đánh dấu đã đọc" variant="ghost" small onPress={readAll} />
+            <Text style={{ color: colors.muted }}>{t('{n} thông báo chưa đọc', { n: unread })}</Text>
+            <Button title={t('Đánh dấu đã đọc')} variant="ghost" small onPress={readAll} />
           </View>
         ) : undefined
       }
-      ListEmptyComponent={<Empty text="Chưa có thông báo nào" hint="Thông báo xác nhận đăng ký và thay đổi sự kiện sẽ hiện ở đây." />}
+      ListEmptyComponent={<Empty text={t('Chưa có thông báo nào')} hint={t('Thông báo xác nhận đăng ký và thay đổi sự kiện sẽ hiện ở đây.')} />}
       renderItem={({ item }) => (
         <Card style={!item.read ? { borderColor: colors.primary, backgroundColor: '#f2fbf9' } : undefined}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>

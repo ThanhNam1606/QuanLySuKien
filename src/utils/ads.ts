@@ -36,18 +36,18 @@ export async function initAds() {
 }
 
 /**
- * Chuyển trang kèm quảng cáo toàn màn hình.
- * - Nếu đã đủ 3 phút kể từ lần hiện trước và quảng cáo đã nạp xong: hiện quảng cáo,
- *   người dùng PHẢI đóng quảng cáo thì `onDone` (chuyển trang) mới chạy.
- * - Ngược lại: chạy `onDone` ngay để không chặn người dùng.
+ * Hiện quảng cáo toàn màn hình (nếu được phép).
+ * - Chỉ hiện khi đã đủ 3 phút kể từ lần hiện trước và quảng cáo đã nạp xong.
+ *   Quảng cáo phủ kín màn hình nên người dùng PHẢI đóng thì mới thao tác tiếp được.
+ * - `onDone` (nếu có) chạy sau khi người dùng đóng quảng cáo, hoặc chạy ngay nếu không hiện.
  */
-export function showInterstitial(onDone: () => void) {
+export function showInterstitial(onDone?: () => void) {
   if (showing) return; // đang hiện quảng cáo, bỏ qua lần bấm thêm
 
   const ad = interstitial;
   const due = Date.now() - lastShownAt >= INTERSTITIAL_COOLDOWN_MS;
   if (!ad || !loaded || !due) {
-    onDone();
+    onDone?.();
     return;
   }
 
@@ -56,7 +56,7 @@ export function showInterstitial(onDone: () => void) {
     unsubscribeClosed();
     unsubscribeError();
     showing = false;
-    onDone();
+    onDone?.();
   };
   const unsubscribeClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
     lastShownAt = Date.now();
