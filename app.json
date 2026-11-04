@@ -48,6 +48,26 @@
         }
       ],
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Ứng dụng cần truy cập thư viện ảnh để bạn chọn ảnh bìa cho sự kiện.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Ứng dụng cần quyền lịch để thêm sự kiện bạn đã đăng ký vào lịch điện thoại."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#0f766e"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#0f766e",

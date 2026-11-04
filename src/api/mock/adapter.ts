@@ -1,5 +1,6 @@
 import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { db } from './db';
+import { dbReady, scheduleSave } from './persist';
 import { HttpError, routes } from './routes';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -9,6 +10,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
  * và trả kết quả như một server thật (có độ trễ, mã lỗi 401/403/404/409...).
  */
 export async function mockAdapter(config: InternalAxiosRequestConfig): Promise<AxiosResponse> {
+  await dbReady; // đợi nạp xong dữ liệu đã lưu trước khi xử lý request đầu tiên
   await sleep(250);
 
   const method = (config.method ?? 'get').toUpperCase();
@@ -51,7 +53,9 @@ export async function mockAdapter(config: InternalAxiosRequestConfig): Promise<A
     const params: Record<string, string> = {};
     r.names.forEach((n, i) => (params[n] = decodeURIComponent(m[i + 1])));
     try {
-      return respond(200, r.handler({ params, query, body, user }));
+      const result = r.handler({ params, query, body, user });
+      if (method !== 'GET') scheduleSave(); // có thể đã thay đổi dữ liệu: lưu lại
+      return respond(200, result);
     } catch (e) {
       if (e instanceof HttpError) return fail(e.status, e.message, e.data);
       return fail(500, 'Lỗi máy chủ giả lập: ' + (e as Error).message);

@@ -5,12 +5,17 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { refreshProfile } from '@/api/services';
 import AdFooter from '@/components/AdFooter';
+import ReminderBridge from '@/components/ReminderBridge';
 import { Loading } from '@/components/ui';
 import { initAds } from '@/utils/ads';
 import { colors } from '@/constants/theme';
 import { useAuth } from '@/store/authStore';
+import { useLang, useT } from '@/i18n';
+import { languageHeaderRight } from '@/components/LanguageSwitch';
+import { BACK_ICON } from '@/constants/icons';
 
 export default function RootLayout() {
+  const t = useT();
   const isLoading = useAuth((s) => s.isLoading);
   const insets = useSafeAreaInsets();
 
@@ -20,6 +25,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     (async () => {
+      await useLang.getState().load();
       await useAuth.getState().loadSession();
       // Đồng bộ lại hồ sơ; nếu token hết hạn, axios interceptor sẽ tự đăng xuất.
       if (useAuth.getState().user) refreshProfile().catch(() => {});
@@ -38,18 +44,20 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: false,
+              headerRight: languageHeaderRight,
+              headerBackImageSource: BACK_ICON,
               headerTintColor: colors.primaryDark,
               headerTitleStyle: { fontWeight: '700' },
               headerStyle: { backgroundColor: '#fff' },
               contentStyle: { backgroundColor: colors.bg },
             }}
           >
-            <Stack.Screen name="event/[id]" options={{ headerShown: true, title: 'Chi tiết sự kiện', headerBackTitle: 'Quay lại' }} />
-            <Stack.Screen name="ticket/[id]" options={{ headerShown: true, title: 'Vé điện tử', headerBackTitle: 'Quay lại' }} />
-            <Stack.Screen name="page2" options={{ headerShown: true, title: 'Trang 2', headerBackTitle: 'Quay lại' }} />
+            <Stack.Screen name="event/[id]" options={{ headerShown: true, title: t('Chi tiết sự kiện'), headerBackTitle: t('Quay lại') }} />
+            <Stack.Screen name="ticket/[id]" options={{ headerShown: true, title: t('Vé điện tử'), headerBackTitle: t('Quay lại') }} />
           </Stack>
         </SafeAreaInsetsContext.Provider>
       </View>
+      <ReminderBridge />
       <AdFooter bottomInset={insets.bottom} />
     </View>
   );

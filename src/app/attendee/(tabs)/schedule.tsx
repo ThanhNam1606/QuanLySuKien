@@ -10,12 +10,14 @@ import { useApi } from '@/hooks/useApi';
 import { useAuth } from '@/store/authStore';
 import { EventItem } from '@/types';
 import { fmtDate } from '@/utils/format';
+import { useT } from '@/i18n';
 
 type Tab = 'upcoming' | 'past' | 'favorites';
 
 export default function Schedule() {
+  const t = useT();
   const user = useAuth((s) => s.user);
-  if (!user) return <LoginPrompt text="Đăng nhập để xem lịch và vé của bạn" />;
+  if (!user) return <LoginPrompt text={t('Đăng nhập để xem lịch và vé của bạn')} />;
   return <ScheduleContent />;
 }
 
@@ -35,6 +37,7 @@ function findConflicts(events: EventItem[]) {
 }
 
 function ScheduleContent() {
+  const t = useT();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>('upcoming');
   const regs = useApi(EventApi.myRegistrations, []);
@@ -59,14 +62,14 @@ function ScheduleContent() {
       ListHeaderComponent={
         <View style={{ gap: 12 }}>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Chip label={`Sắp tới (${upcoming.length})`} active={tab === 'upcoming'} onPress={() => setTab('upcoming')} />
-            <Chip label={`Đã qua (${past.length})`} active={tab === 'past'} onPress={() => setTab('past')} />
-            <Chip label={`Yêu thích (${favs.data?.length ?? 0})`} active={tab === 'favorites'} onPress={() => setTab('favorites')} />
+            <Chip label={t('Sắp tới ({n})', { n: upcoming.length })} active={tab === 'upcoming'} onPress={() => setTab('upcoming')} />
+            <Chip label={t('Đã qua ({n})', { n: past.length })} active={tab === 'past'} onPress={() => setTab('past')} />
+            <Chip label={t('Yêu thích ({n})', { n: favs.data?.length ?? 0 })} active={tab === 'favorites'} onPress={() => setTab('favorites')} />
           </View>
           {tab === 'upcoming' && conflicts.size > 0 && (
             <View style={{ backgroundColor: colors.warningSoft, padding: 12, borderRadius: 12 }}>
               <Text style={{ color: colors.warning, fontWeight: '700' }}>
-                Có {conflicts.size} sự kiện bị trùng thời gian. Hãy kiểm tra các thẻ được đánh dấu bên dưới.
+                {t('Có {n} sự kiện bị trùng thời gian. Hãy kiểm tra các thẻ được đánh dấu bên dưới.', { n: conflicts.size })}
               </Text>
             </View>
           )}
@@ -74,8 +77,8 @@ function ScheduleContent() {
       }
       ListEmptyComponent={
         <Empty
-          text={tab === 'favorites' ? 'Bạn chưa lưu sự kiện nào' : tab === 'past' ? 'Chưa có sự kiện đã qua' : 'Lịch của bạn đang trống'}
-          hint={tab === 'favorites' ? 'Bấm "Lưu" trong trang chi tiết để giữ lại sự kiện yêu thích.' : 'Hãy khám phá và đăng ký sự kiện đầu tiên.'}
+          text={tab === 'favorites' ? t('Bạn chưa lưu sự kiện nào') : tab === 'past' ? t('Chưa có sự kiện đã qua') : t('Lịch của bạn đang trống')}
+          hint={tab === 'favorites' ? t('Bấm "Lưu" trong trang chi tiết để giữ lại sự kiện yêu thích.') : t('Hãy khám phá và đăng ký sự kiện đầu tiên.')}
         />
       }
       renderItem={({ item }) => (
@@ -85,11 +88,11 @@ function ScheduleContent() {
             tab !== 'favorites' ? (
               <View style={{ gap: 8, marginTop: 6 }}>
                 <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-                  {conflicts.has(item.id) && tab === 'upcoming' && <Badge label="⚠ Trùng giờ" color={colors.warning} bg={colors.warningSoft} />}
-                  {item.myRegistration?.checkedIn && <Badge label="Đã điểm danh" color={colors.success} bg={colors.successSoft} />}
+                  {conflicts.has(item.id) && tab === 'upcoming' && <Badge label={t('⚠ Trùng giờ')} color={colors.warning} bg={colors.warningSoft} />}
+                  {item.myRegistration?.checkedIn && <Badge label={t('Đã điểm danh')} color={colors.success} bg={colors.successSoft} />}
                   <Text style={{ color: colors.muted, fontSize: 12 }}>{fmtDate(item.startTime)}</Text>
                 </View>
-                <Button title="Xem vé điện tử" variant="soft" small onPress={() => router.push(`/ticket/${item.id}` as any)} />
+                <Button title={t('Xem vé điện tử')} variant="soft" small onPress={() => router.push(`/ticket/${item.id}` as any)} />
               </View>
             ) : undefined
           }

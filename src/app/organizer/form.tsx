@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { EventApi, OrganizerApi } from '@/api/services';
 import { Button, Chip, ErrorView, Input, Loading, Page } from '@/components/ui';
@@ -8,6 +9,7 @@ import { useApi } from '@/hooks/useApi';
 import { EventItem } from '@/types';
 import { showMessage } from '@/utils/dialog';
 import { parseDateTimeInput, toDateTimeInput } from '@/utils/format';
+import { pickCoverImage } from '@/utils/pickImage';
 
 export default function EventFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -46,6 +48,15 @@ function FormBody({ initial }: { initial?: EventItem }) {
   const [description, setDescription] = useState(initial?.description ?? '');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState<'save' | 'submit' | null>(null);
+
+  async function chooseImage() {
+    try {
+      const uri = await pickCoverImage();
+      if (uri) setImage(uri);
+    } catch {
+      showMessage('Không mở được thư viện ảnh', 'Hãy kiểm tra quyền truy cập ảnh của ứng dụng rồi thử lại.');
+    }
+  }
 
   const canResubmit = !initial || ['draft', 'rejected'].includes(initial.status);
 
@@ -100,7 +111,19 @@ function FormBody({ initial }: { initial?: EventItem }) {
       <Input label="Đối tượng tham gia" value={audience} onChangeText={setAudience} placeholder="VD: Sinh viên, người đi làm" />
       <Input label="Quy định" value={rules} onChangeText={setRules} multiline />
       <Input label="Thông tin liên hệ" value={contact} onChangeText={setContact} placeholder="Email / số điện thoại" />
-      <Input label="Link ảnh bìa (không bắt buộc)" value={image} onChangeText={setImage} autoCapitalize="none" placeholder="https://…" />
+      <View style={{ gap: 8 }}>
+        <Text style={{ fontWeight: '600', color: colors.text }}>Ảnh bìa (không bắt buộc)</Text>
+        {!!image.trim() && (
+          <Image source={{ uri: image.trim() }} style={{ width: '100%', height: 170, borderRadius: 12, backgroundColor: colors.neutralSoft }} contentFit="cover" />
+        )}
+        {Platform.OS !== 'web' && (
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Button title={image.trim() ? 'Đổi ảnh' : 'Chọn ảnh từ thư viện'} variant="soft" small onPress={chooseImage} style={{ flex: 1 }} />
+            {!!image.trim() && <Button title="Xóa ảnh" variant="outline" small onPress={() => setImage('')} />}
+          </View>
+        )}
+      </View>
+      <Input label="Hoặc dán link ảnh" value={image} onChangeText={setImage} autoCapitalize="none" placeholder="https://…" />
 
       {!!error && <Text style={{ color: colors.danger }}>{error}</Text>}
       <Button title={initial ? 'Lưu thay đổi' : 'Lưu bản nháp'} variant={canResubmit ? 'outline' : 'primary'} onPress={() => save(false)} loading={busy === 'save'} disabled={!!busy} />

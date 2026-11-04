@@ -1,3 +1,5 @@
+import { t, useLang } from '@/i18n';
+
 const pad = (n: number) => String(n).padStart(2, '0');
 
 export function fmtDate(iso: string) {
@@ -22,19 +24,24 @@ export function fmtRange(startIso: string, endIso: string) {
 }
 
 export function fmtPrice(price: number) {
-  if (!price) return 'Miễn phí';
+  if (!price) return t('Miễn phí');
   return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ';
 }
 
-const WEEKDAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+const WEEKDAYS = {
+  vi: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+  en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+};
+const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export function weekday(iso: string) {
-  return WEEKDAYS[new Date(iso).getDay()];
+  return WEEKDAYS[useLang.getState().lang][new Date(iso).getDay()];
 }
 export function dayOfMonth(iso: string) {
   return pad(new Date(iso).getDate());
 }
 export function monthLabel(iso: string) {
-  return `Th${new Date(iso).getMonth() + 1}`;
+  const m = new Date(iso).getMonth();
+  return useLang.getState().lang === 'en' ? MONTHS_EN[m] : `Th${m + 1}`;
 }
 
 /** Chuỗi YYYY-MM-DD HH:mm -> ISO (giờ địa phương). Trả về null nếu sai định dạng. */

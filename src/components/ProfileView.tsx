@@ -7,7 +7,9 @@ import { colors } from '@/constants/theme';
 import { useAuth } from '@/store/authStore';
 import { Role } from '@/types';
 import { confirmAction, showMessage } from '@/utils/dialog';
+import { refreshReminders } from '@/utils/reminders';
 import { Badge, Button, Card, Input, Page, SectionTitle } from './ui';
+import { useT } from '@/i18n';
 
 const ROLE_LABEL: Record<Role, string> = {
   attendee: 'Người tham gia',
@@ -16,6 +18,7 @@ const ROLE_LABEL: Record<Role, string> = {
 };
 
 export default function ProfileView() {
+  const t = useT();
   const router = useRouter();
   const user = useAuth((s) => s.user)!;
   const updateUser = useAuth((s) => s.updateUser);
@@ -47,9 +50,9 @@ export default function ProfileView() {
         ...(user.role === 'organizer' ? { orgName } : {}),
       });
       await updateUser(u);
-      showMessage('Đã lưu', 'Thông tin cá nhân đã được cập nhật.');
+      showMessage(t('Đã lưu'), t('Thông tin cá nhân đã được cập nhật.'));
     } catch (e: any) {
-      showMessage('Không lưu được', e.message);
+      showMessage(t('Không lưu được'), e.message);
     } finally {
       setSaving(false);
     }
@@ -60,8 +63,9 @@ export default function ProfileView() {
     try {
       await AuthApi.updateMe({ [key]: value });
     } catch (e: any) {
-      showMessage('Không lưu được cài đặt', e.message);
+      showMessage(t('Không lưu được cài đặt'), e.message);
     }
+    if (key === 'notifyReminder') refreshReminders();
   };
 
   const changePassword = async () => {
@@ -70,9 +74,9 @@ export default function ProfileView() {
       await AuthApi.changePassword(oldPw, newPw);
       setOldPw('');
       setNewPw('');
-      showMessage('Đã đổi mật khẩu');
+      showMessage(t('Đã đổi mật khẩu'));
     } catch (e: any) {
-      showMessage('Không đổi được mật khẩu', e.message);
+      showMessage(t('Không đổi được mật khẩu'), e.message);
     } finally {
       setPwBusy(false);
     }
@@ -83,16 +87,16 @@ export default function ProfileView() {
     try {
       const u = await AuthApi.requestOrganizer(orgName);
       await updateUser(u);
-      showMessage('Đã gửi yêu cầu', 'Quản trị viên sẽ xem xét và thông báo kết quả cho bạn.');
+      showMessage(t('Đã gửi yêu cầu'), t('Quản trị viên sẽ xem xét và thông báo kết quả cho bạn.'));
     } catch (e: any) {
-      showMessage('Không gửi được yêu cầu', e.message);
+      showMessage(t('Không gửi được yêu cầu'), e.message);
     } finally {
       setReqBusy(false);
     }
   };
 
   const onLogout = () =>
-    confirmAction('Đăng xuất', 'Bạn có chắc muốn đăng xuất?', async () => {
+    confirmAction(t('Đăng xuất'), t('Bạn có chắc muốn đăng xuất?'), async () => {
       await logout();
       router.replace('/(auth)/login' as any);
     });
@@ -105,38 +109,38 @@ export default function ProfileView() {
         </View>
         <Text style={{ fontSize: 19, fontWeight: '800', color: colors.text }}>{user.name}</Text>
         <Text style={{ color: colors.muted }}>{user.email}</Text>
-        <Badge label={ROLE_LABEL[user.role]} color={colors.primaryDark} bg={colors.primarySoft} />
+        <Badge label={t(ROLE_LABEL[user.role])} color={colors.primaryDark} bg={colors.primarySoft} />
       </Card>
 
       <Card style={{ gap: 12 }}>
-        <SectionTitle>Thông tin cá nhân</SectionTitle>
-        <Input label="Họ và tên" value={name} onChangeText={setName} />
-        <Input label="Số điện thoại" value={phone} onChangeText={setPhone} keyboardType="phone-pad" placeholder="Chưa cập nhật" />
-        {user.role === 'organizer' && <Input label="Tên đơn vị tổ chức" value={orgName} onChangeText={setOrgName} />}
-        <Button title="Lưu thay đổi" onPress={save} loading={saving} />
+        <SectionTitle>{t('Thông tin cá nhân')}</SectionTitle>
+        <Input label={t('Họ và tên')} value={name} onChangeText={setName} />
+        <Input label={t('Số điện thoại')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" placeholder={t('Chưa cập nhật')} />
+        {user.role === 'organizer' && <Input label={t('Tên đơn vị tổ chức')} value={orgName} onChangeText={setOrgName} />}
+        <Button title={t('Lưu thay đổi')} onPress={save} loading={saving} />
       </Card>
 
       {user.role === 'attendee' && (
         <>
           <Card style={{ gap: 12 }}>
-            <SectionTitle>Cài đặt thông báo</SectionTitle>
-            <Row label="Nhắc lịch trước sự kiện" value={user.notifyReminder} onChange={(v) => toggle('notifyReminder', v)} />
-            <Row label="Báo khi sự kiện thay đổi" value={user.notifyUpdates} onChange={(v) => toggle('notifyUpdates', v)} />
+            <SectionTitle>{t('Cài đặt thông báo')}</SectionTitle>
+            <Row label={t('Nhắc lịch trước sự kiện')} value={user.notifyReminder} onChange={(v) => toggle('notifyReminder', v)} />
+            <Row label={t('Báo khi sự kiện thay đổi')} value={user.notifyUpdates} onChange={(v) => toggle('notifyUpdates', v)} />
           </Card>
 
           <Card style={{ gap: 10 }}>
-            <SectionTitle>Trở thành Ban tổ chức</SectionTitle>
+            <SectionTitle>{t('Trở thành Ban tổ chức')}</SectionTitle>
             {user.organizerRequest === 'pending' ? (
-              <Text style={{ color: colors.warning }}>Yêu cầu của bạn ({user.orgName}) đang chờ quản trị viên xét duyệt.</Text>
+              <Text style={{ color: colors.warning }}>{t('Yêu cầu của bạn ({org}) đang chờ quản trị viên xét duyệt.', { org: String(user.orgName ?? '') })}</Text>
             ) : (
               <>
                 <Text style={{ color: colors.muted }}>
                   {user.organizerRequest === 'rejected'
-                    ? 'Yêu cầu trước đó chưa được chấp nhận. Bạn có thể bổ sung thông tin và gửi lại.'
-                    : 'Muốn tự tạo và quản lý sự kiện? Gửi yêu cầu để quản trị viên cấp quyền.'}
+                    ? t('Yêu cầu trước đó chưa được chấp nhận. Bạn có thể bổ sung thông tin và gửi lại.')
+                    : t('Muốn tự tạo và quản lý sự kiện? Gửi yêu cầu để quản trị viên cấp quyền.')}
                 </Text>
-                <Input label="Tên đơn vị tổ chức" value={orgName} onChangeText={setOrgName} placeholder="VD: CLB Sách Hà Nội" />
-                <Button title="Gửi yêu cầu" variant="outline" onPress={requestOrganizer} loading={reqBusy} disabled={!orgName.trim()} />
+                <Input label={t('Tên đơn vị tổ chức')} value={orgName} onChangeText={setOrgName} placeholder={t('VD: CLB Sách Hà Nội')} />
+                <Button title={t('Gửi yêu cầu')} variant="outline" onPress={requestOrganizer} loading={reqBusy} disabled={!orgName.trim()} />
               </>
             )}
           </Card>
@@ -144,13 +148,13 @@ export default function ProfileView() {
       )}
 
       <Card style={{ gap: 12 }}>
-        <SectionTitle>Đổi mật khẩu</SectionTitle>
-        <Input label="Mật khẩu hiện tại" value={oldPw} onChangeText={setOldPw} secureTextEntry />
-        <Input label="Mật khẩu mới" value={newPw} onChangeText={setNewPw} secureTextEntry placeholder="Tối thiểu 6 ký tự" />
-        <Button title="Đổi mật khẩu" variant="outline" onPress={changePassword} loading={pwBusy} disabled={!oldPw || !newPw} />
+        <SectionTitle>{t('Đổi mật khẩu')}</SectionTitle>
+        <Input label={t('Mật khẩu hiện tại')} value={oldPw} onChangeText={setOldPw} secureTextEntry />
+        <Input label={t('Mật khẩu mới')} value={newPw} onChangeText={setNewPw} secureTextEntry placeholder={t('Tối thiểu 6 ký tự')} />
+        <Button title={t('Đổi mật khẩu')} variant="outline" onPress={changePassword} loading={pwBusy} disabled={!oldPw || !newPw} />
       </Card>
 
-      <Button title="Đăng xuất" variant="danger" onPress={onLogout} />
+      <Button title={t('Đăng xuất')} variant="danger" onPress={onLogout} />
     </Page>
   );
 }

@@ -5,8 +5,10 @@ import { AuthApi } from '@/api/services';
 import AuthShell from '@/components/AuthShell';
 import { Button, Input } from '@/components/ui';
 import { colors } from '@/constants/theme';
+import { useT } from '@/i18n';
 
 export default function ForgotPasswordScreen() {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -27,12 +29,12 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <AuthShell title="Khôi phục mật khẩu" subtitle="Nhập email đã đăng ký, chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu">
+    <AuthShell title={t('Khôi phục mật khẩu')} subtitle={t('Nhập email đã đăng ký, chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu')}>
       <Input label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="ten@email.com" />
       {!!error && <Text style={{ color: colors.danger }}>{error}</Text>}
       {!!message && <Text style={{ color: colors.success }}>{message}</Text>}
-      <Button title="Gửi hướng dẫn" onPress={onSubmit} loading={loading} />
-      <Link href="/(auth)/login" style={{ color: colors.primary, fontWeight: '600', textAlign: 'center' }}>Quay lại đăng nhập</Link>
+      <Button title={t('Gửi hướng dẫn')} onPress={onSubmit} loading={loading} />
+      <Link href="/(auth)/login" style={{ color: colors.primary, fontWeight: '600', textAlign: 'center' }}>{t('Quay lại đăng nhập')}</Link>
     </AuthShell>
   );
 }

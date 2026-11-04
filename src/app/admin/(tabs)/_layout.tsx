@@ -1,11 +1,13 @@
 import { Tabs } from 'expo-router';
 import { tabIcon } from '@/components/TabIcon';
 import { colors } from '@/constants/theme';
+import { languageHeaderRight } from '@/components/LanguageSwitch';
 
 export default function AdminTabs() {
   return (
     <Tabs
       screenOptions={{
+        headerRight: languageHeaderRight,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.muted,
         headerStyle: { backgroundColor: '#fff' },

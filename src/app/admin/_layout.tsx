@@ -1,6 +1,8 @@
 import { Redirect, Stack } from 'expo-router';
 import { colors } from '@/constants/theme';
 import { useAuth } from '@/store/authStore';
+import { languageHeaderRight } from '@/components/LanguageSwitch';
+import { BACK_ICON } from '@/constants/icons';
 
 export default function AdminLayout() {
   const user = useAuth((s) => s.user);
@@ -9,10 +11,12 @@ export default function AdminLayout() {
   return (
     <Stack
       screenOptions={{
+        headerRight: languageHeaderRight,
         headerShown: false,
         headerTintColor: colors.primaryDark,
         headerTitleStyle: { fontWeight: '700' },
         headerBackTitle: 'Quay lại',
+        headerBackImageSource: BACK_ICON,
       }}
     >
       <Stack.Screen name="categories" options={{ headerShown: true, title: 'Danh mục sự kiện' }} />
