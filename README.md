@@ -1,7 +1,7 @@
 # EventApp – Ứng dụng quản lý sự kiện
 #Link Báo cáo BTL: https://1drv.ms/w/c/a285388a2c142c54/IQDaOZcNHeoQT6UhNLrMxYx7AZ8iwTPtJuljO7pRU5qmp0U?e=1d8xtg
 # LINK VIDEO:
-https://docs.google.com/document/d/1ezZhtPPMpNM2mxc2Qyq5uHPvoj6ujjz5/edit?usp=sharing&ouid=101868398609328138597&rtpof=true&sd=true
+file:///D:/Video/2026-11-06%2012-48-57.mp4
 # EventApp – Ứng dụng quản lý sự kiện (React Native + Expo + axios mock API + Google AdMob)
 
 Ứng dụng di động quản lý và tham gia sự kiện, dành cho 3 vai trò: **Người tham gia**, **Ban tổ chức** và **Admin**.
