@@ -1,4 +1,5 @@
-import { Text } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
+
 
 export const tabIcon = (emoji: string) =>
   function Icon({ focused }: { focused: boolean }) {

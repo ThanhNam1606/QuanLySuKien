@@ -1,14 +1,16 @@
 import { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BackButton from '@/components/BackButton';
 import LanguageSwitch from '@/components/LanguageSwitch';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 
 type Props = { title: string; subtitle?: string; children: ReactNode; /** Hiện mũi tên quay lại ở góc trên bên trái. */ back?: boolean };
 
 export default function AuthShell({ title, subtitle, children, back }: Props) {
+  const { colors } = useTheme();
   const router = useRouter();
   // Có trang trước thì quay lại; mở thẳng vào trang này (không có trang trước) thì về trang chủ cho khách.
   const goBack = () => (router.canGoBack() ? router.back() : router.replace('/attendee' as any));

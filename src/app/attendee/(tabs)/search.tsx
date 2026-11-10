@@ -1,9 +1,10 @@
 import { ReactNode, useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
+import { FlatList, ScrollView, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { EventApi, EventQuery } from '@/api/services';
 import EventCard from '@/components/EventCard';
 import { Chip, Empty, ErrorView, Input } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { useDebounced } from '@/hooks/useDebounced';
 import { useT } from '@/i18n';
@@ -17,6 +18,8 @@ const WHEN: { label: string; value?: EventQuery['when'] }[] = [
 
 export default function Search() {
   const t = useT();
+  const { colors, cardStyle } = useTheme();
+  const grid = cardStyle === 'grid';
   const [q, setQ] = useState('');
   const [area, setArea] = useState('');
   const [categoryId, setCategoryId] = useState<string | undefined>();
@@ -33,12 +36,15 @@ export default function Search() {
 
   return (
     <FlatList
+      key={grid ? 'grid' : 'single'}
+      numColumns={grid ? 2 : 1}
+      columnWrapperStyle={grid ? { gap: 12 } : undefined}
       style={{ backgroundColor: colors.bg }}
       data={res.data ?? []}
       keyExtractor={(e) => e.id}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 40 }}
-      renderItem={({ item }) => <EventCard event={item} />}
+      renderItem={({ item }) => <EventCard event={item} variant={cardStyle} />}
       ListHeaderComponent={
         <View style={{ gap: 12 }}>
           <Input value={q} onChangeText={setQ} placeholder={t('Tìm theo tên, từ khóa, đơn vị tổ chức…')} returnKeyType="search" />
@@ -65,6 +71,7 @@ export default function Search() {
 }
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
+  const { colors } = useTheme();
   return (
     <View style={{ gap: 6 }}>
       <Text style={{ fontSize: 13, fontWeight: '700', color: colors.muted }}>{title}</Text>

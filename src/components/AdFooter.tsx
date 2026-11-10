@@ -3,7 +3,7 @@ import { Keyboard, Platform, View } from 'react-native';
 import { usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AdBanner from '@/components/AdBanner';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { showInterstitial } from '@/utils/ads';
 
 /**
@@ -13,6 +13,7 @@ import { showInterstitial } from '@/utils/ads';
  *   hiện Interstitial Ads toàn màn hình, theo chu kỳ 3 phút (xem src/constants/ads.ts).
  */
 export default function AdFooter({ bottomInset }: { bottomInset?: number }) {
+  const { colors } = useTheme();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const [keyboard, setKeyboard] = useState(false);
@@ -40,7 +41,7 @@ export default function AdFooter({ bottomInset }: { bottomInset?: number }) {
   if (Platform.OS === 'web' || keyboard) return null;
 
   return (
-    <View style={{ backgroundColor: '#fff', borderTopWidth: 1, borderColor: colors.border, paddingBottom: bottomInset ?? insets.bottom }}>
+    <View style={{ backgroundColor: colors.card, borderTopWidth: 1, borderColor: colors.border, paddingBottom: bottomInset ?? insets.bottom }}>
       <AdBanner />
     </View>
   );

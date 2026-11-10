@@ -1,14 +1,16 @@
+import { AppText as Text } from '@/components/AppText';
 import { useState } from 'react';
-import { Text } from 'react-native';
+
 import { Link, useRouter } from 'expo-router';
 import { AuthApi } from '@/api/services';
 import AuthShell from '@/components/AuthShell';
 import { Button, Input } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/store/authStore';
 import { useT } from '@/i18n';
 
 export default function RegisterScreen() {
+  const { colors } = useTheme();
   const t = useT();
   const router = useRouter();
   const setSession = useAuth((s) => s.setSession);

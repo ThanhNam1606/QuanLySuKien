@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { FlatList, RefreshControl, Text, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { useRouter } from 'expo-router';
 import { EventApi } from '@/api/services';
 import EventCard from '@/components/EventCard';
 import LoginPrompt from '@/components/LoginPrompt';
 import { Badge, Button, Chip, Empty, ErrorView, Loading } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { useAuth } from '@/store/authStore';
 import { EventItem } from '@/types';
@@ -38,6 +39,8 @@ function findConflicts(events: EventItem[]) {
 
 function ScheduleContent() {
   const t = useT();
+  const { colors, cardStyle } = useTheme();
+  const grid = cardStyle === 'grid';
   const router = useRouter();
   const [tab, setTab] = useState<Tab>('upcoming');
   const regs = useApi(EventApi.myRegistrations, []);
@@ -54,6 +57,9 @@ function ScheduleContent() {
 
   return (
     <FlatList
+      key={grid ? 'grid' : 'single'}
+      numColumns={grid ? 2 : 1}
+      columnWrapperStyle={grid ? { gap: 12 } : undefined}
       style={{ backgroundColor: colors.bg }}
       data={data}
       keyExtractor={(e) => e.id}
@@ -84,6 +90,7 @@ function ScheduleContent() {
       renderItem={({ item }) => (
         <EventCard
           event={item}
+          variant={cardStyle}
           footer={
             tab !== 'favorites' ? (
               <View style={{ gap: 8, marginTop: 6 }}>

@@ -66,3 +66,39 @@ export function normalize(s: string) {
     .replace(/Đ/g, 'D')
     .toLowerCase();
 }
+
+const WEEKDAYS_LONG = {
+  vi: ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'],
+  en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+};
+/** "Chủ nhật" / "Sunday" */
+export function weekdayLong(iso: string) {
+  return WEEKDAYS_LONG[useLang.getState().lang][new Date(iso).getDay()];
+}
+/** "21/12" */
+export function fmtDayMonth(iso: string) {
+  const d = new Date(iso);
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
+}
+/** "20 Th12" hoặc "20 Dec" */
+export function fmtBadgeDate(iso: string) {
+  return `${dayOfMonth(iso).replace(/^0/, '')} ${monthLabel(iso)}`;
+}
+/** Lấy phần cuối của địa chỉ làm tên thành phố: "Hoàn Kiếm, Hà Nội" -> "Hà Nội". */
+export function cityOf(location: string) {
+  const parts = location.split(',').map((x) => x.trim()).filter(Boolean);
+  return parts[parts.length - 1] ?? location;
+}
+/** "Chủ nhật, 21/12 · Hà Nội" */
+export function fmtEventLine(startIso: string, location: string) {
+  return `${weekdayLong(startIso)}, ${fmtDayMonth(startIso)} · ${cityOf(location)}`;
+}
+/** 12 giờ kiểu "7:00 tối" (VI) hoặc "7:00 PM" (EN). */
+export function fmtClock12(iso: string) {
+  const d = new Date(iso);
+  const h = d.getHours();
+  const m = pad(d.getMinutes());
+  if (useLang.getState().lang === 'en') return `${h % 12 === 0 ? 12 : h % 12}:${m} ${h < 12 ? 'AM' : 'PM'}`;
+  const part = h < 12 ? 'sáng' : h < 13 ? 'trưa' : h < 18 ? 'chiều' : 'tối';
+  return `${h % 12 === 0 ? 12 : h % 12}:${m} ${part}`;
+}

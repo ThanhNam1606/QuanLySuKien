@@ -1,17 +1,17 @@
 import { Tabs } from 'expo-router';
 import { tabIcon } from '@/components/TabIcon';
-import { colors } from '@/constants/theme';
-import { languageHeaderRight } from '@/components/LanguageSwitch';
+import { useTheme } from '@/hooks/useTheme';
+import ScreenHeader from '@/components/ScreenHeader';
 
 export default function OrganizerTabs() {
+  const { colors } = useTheme();
   return (
     <Tabs
       screenOptions={{
-        headerRight: languageHeaderRight,
+        header: ({ options }) => <ScreenHeader title={options.title} />,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.muted,
-        headerStyle: { backgroundColor: '#fff' },
-        headerTitleStyle: { fontWeight: '800', color: colors.text },
+        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border },
         tabBarLabelStyle: { fontWeight: '600', fontSize: 11 },
       }}
     >

@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { FlatList, RefreshControl, Text, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { AdminApi } from '@/api/services';
 import { Badge, Button, Card, Chip, Empty, ErrorView, Input, Loading } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { useDebounced } from '@/hooks/useDebounced';
 import { useAuth } from '@/store/authStore';
@@ -17,6 +18,7 @@ const ROLES: { value: Role; label: string }[] = [
 ];
 
 export default function Users() {
+  const { colors } = useTheme();
   const me = useAuth((s) => s.user);
   const [q, setQ] = useState('');
   const dq = useDebounced(q);

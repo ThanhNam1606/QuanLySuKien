@@ -1,15 +1,17 @@
 import { useCallback, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect } from 'expo-router';
 import { OrganizerApi } from '@/api/services';
 import { Button, Card, Input, Page } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { fmtTime } from '@/utils/format';
 
 type Result = { ok: true; name: string; event: string; code: string; at: string } | { ok: false; message: string };
 
 export default function Scan() {
+  const { colors } = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
   const [active, setActive] = useState(true);
   const [busy, setBusy] = useState(false);

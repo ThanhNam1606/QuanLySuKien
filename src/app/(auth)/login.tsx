@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { Link, useRouter } from 'expo-router';
 import { AuthApi } from '@/api/services';
 import AuthShell from '@/components/AuthShell';
 import { Button, Chip, Input } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/store/authStore';
 import { useT } from '@/i18n';
 
@@ -15,6 +16,7 @@ const DEMO = [
 ];
 
 export default function LoginScreen() {
+  const { colors } = useTheme();
   const t = useT();
   const router = useRouter();
   const setSession = useAuth((s) => s.setSession);

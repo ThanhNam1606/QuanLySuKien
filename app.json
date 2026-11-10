@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "eventapp",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
       "infoPlist": {
@@ -21,7 +21,9 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "permissions": ["CAMERA"],
+      "permissions": [
+        "CAMERA"
+      ],
       "predictiveBackGestureEnabled": false,
       "package": "com.eventapp.quanlysukien"
     },
@@ -64,15 +66,18 @@
       [
         "expo-notifications",
         {
-          "color": "#0f766e"
+          "color": "#6C3BDB"
         }
       ],
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0f766e",
+          "backgroundColor": "#6C3BDB",
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "imageWidth": 76,
+          "dark": {
+            "backgroundColor": "#14111F"
+          }
         }
       ]
     ],

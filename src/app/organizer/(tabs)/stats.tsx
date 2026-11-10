@@ -1,10 +1,12 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { OrganizerApi } from '@/api/services';
 import { Card, Empty, ErrorView, Loading, Page, ProgressBar, SectionTitle, StatBox, StatusBadge } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 
 export default function Stats() {
+  const { colors } = useTheme();
   const { data, loading, error, refreshing, refresh, retry } = useApi(OrganizerApi.stats, []);
   if (loading) return <Loading />;
   if (error || !data) return <ErrorView message={error} onRetry={retry} />;
