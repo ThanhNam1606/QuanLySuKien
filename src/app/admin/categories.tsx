@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Switch, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { AdminApi } from '@/api/services';
 import { Button, Card, Empty, ErrorView, Input, Loading, Page, PromptModal, SectionTitle } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { confirmAction, showMessage } from '@/utils/dialog';
 
 export default function Categories() {
+  const { colors } = useTheme();
   const { data, loading, error, refreshing, refresh, retry, reload } = useApi(AdminApi.categories, []);
   const [name, setName] = useState('');
   const [icon, setIcon] = useState('');

@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { Share, Text, View } from 'react-native';
+import { Share, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { EventApi, OrganizerApi } from '@/api/services';
 import { Badge, Button, Card, Empty, ErrorView, InfoRow, Loading, Page, ProgressBar, PromptModal, SectionTitle, StatBox, StatusBadge } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { confirmAction, showMessage } from '@/utils/dialog';
 import { fmtDateTime, fmtPrice, fmtRange } from '@/utils/format';
 
 export default function ManageEvent() {
+  const { colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const ev = useApi(() => EventApi.detail(id), [id]);

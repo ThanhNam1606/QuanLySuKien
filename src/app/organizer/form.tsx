@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { EventApi, OrganizerApi } from '@/api/services';
 import { Button, Chip, ErrorView, Input, Loading, Page } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { EventItem } from '@/types';
 import { showMessage } from '@/utils/dialog';
@@ -32,6 +33,7 @@ function defaultTime(hour: number) {
 }
 
 function FormBody({ initial }: { initial?: EventItem }) {
+  const { colors } = useTheme();
   const router = useRouter();
   const cats = useApi(EventApi.categories, []);
   const [title, setTitle] = useState(initial?.title ?? '');

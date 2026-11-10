@@ -1,10 +1,12 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { useRouter } from 'expo-router';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { Button } from './ui';
 import { useT } from '@/i18n';
 
 export default function LoginPrompt({ text }: { text?: string }) {
+  const { colors } = useTheme();
   const t = useT();
   const message = text ?? t('Đăng nhập để sử dụng tính năng này');
   const router = useRouter();

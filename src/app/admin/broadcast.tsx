@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { AdminApi } from '@/api/services';
 import { Button, Card, Chip, Empty, ErrorView, Input, Loading, Page, SectionTitle } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { showMessage } from '@/utils/dialog';
 import { fmtDateTime } from '@/utils/format';
@@ -14,6 +15,7 @@ const TARGETS = [
 ];
 
 export default function Broadcast() {
+  const { colors } = useTheme();
   const { data, loading, error, retry, reload, refreshing, refresh } = useApi(AdminApi.broadcasts, []);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');

@@ -1,6 +1,7 @@
-import { FlatList, RefreshControl, Text, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { NotificationApi } from '@/api/services';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { fmtDateTime } from '@/utils/format';
 import { Button, Card, Empty, ErrorView, Loading } from './ui';
@@ -8,6 +9,7 @@ import { useT } from '@/i18n';
 
 /** Dùng chung cho Người tham gia và Ban tổ chức. */
 export default function NotificationList() {
+  const { colors } = useTheme();
   const t = useT();
   const { data, loading, error, refreshing, refresh, retry, reload } = useApi(NotificationApi.list, []);
   if (loading) return <Loading />;
@@ -36,7 +38,7 @@ export default function NotificationList() {
       }
       ListEmptyComponent={<Empty text={t('Chưa có thông báo nào')} hint={t('Thông báo xác nhận đăng ký và thay đổi sự kiện sẽ hiện ở đây.')} />}
       renderItem={({ item }) => (
-        <Card style={!item.read ? { borderColor: colors.primary, backgroundColor: '#f2fbf9' } : undefined}>
+        <Card style={!item.read ? { borderColor: colors.primary, backgroundColor: colors.unreadBg } : undefined}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             {!item.read && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary }} />}
             <Text style={{ fontWeight: '800', color: colors.text, flex: 1 }}>{item.title}</Text>

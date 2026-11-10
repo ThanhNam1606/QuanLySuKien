@@ -3,7 +3,7 @@ import { FlatList, RefreshControl, ScrollView, View } from 'react-native';
 import { AdminApi } from '@/api/services';
 import EventCard from '@/components/EventCard';
 import { Button, Chip, Empty, ErrorView, Input, Loading, PromptModal } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { useDebounced } from '@/hooks/useDebounced';
 import { EventItem } from '@/types';
@@ -20,6 +20,7 @@ const FILTERS = [
 ];
 
 export default function AdminEvents() {
+  const { colors } = useTheme();
   const [status, setStatus] = useState<string | undefined>('pending');
   const [q, setQ] = useState('');
   const dq = useDebounced(q);

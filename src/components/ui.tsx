@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -7,13 +7,14 @@ import {
   ScrollView,
   StyleProp,
   StyleSheet,
-  Text,
   TextInput,
   TextInputProps,
   View,
   ViewStyle,
 } from 'react-native';
-import { colors, radius, statusMeta } from '@/constants/theme';
+import { Colors, getStatusMeta, radius } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { AppText as Text } from './AppText';
 import { EventStatus } from '@/types';
 import { useT } from '@/i18n';
 
@@ -29,7 +30,9 @@ interface ButtonProps {
 }
 
 export function Button({ title, onPress, variant = 'primary', loading, disabled, small, style }: ButtonProps) {
-  const v = buttonVariants[variant];
+  const { colors } = useTheme();
+  const s = useStyles();
+  const v = buttonVariants(colors)[variant];
   return (
     <Pressable
       onPress={onPress}
@@ -52,13 +55,13 @@ export function Button({ title, onPress, variant = 'primary', loading, disabled,
   );
 }
 
-const buttonVariants = {
-  primary: { bg: colors.primary, fg: '#fff', border: colors.primary },
+const buttonVariants = (colors: Colors) => ({
+  primary: { bg: colors.primary, fg: colors.onPrimary, border: colors.primary },
   outline: { bg: 'transparent', fg: colors.primary, border: colors.primary },
   danger: { bg: colors.danger, fg: '#fff', border: colors.danger },
   ghost: { bg: 'transparent', fg: colors.muted, border: 'transparent' },
   soft: { bg: colors.primarySoft, fg: colors.primaryDark, border: colors.primarySoft },
-};
+});
 
 // ---------------- Input ----------------
 interface InputProps extends TextInputProps {
@@ -67,11 +70,13 @@ interface InputProps extends TextInputProps {
 }
 
 export function Input({ label, error, style, ...props }: InputProps) {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <View style={{ gap: 6 }}>
       {!!label && <Text style={s.label}>{label}</Text>}
       <TextInput
-        placeholderTextColor="#98a2a0"
+        placeholderTextColor={colors.placeholder}
         {...props}
         style={[s.input, props.multiline && { minHeight: 90, textAlignVertical: 'top' }, !!error && { borderColor: colors.danger }, style]}
       />
@@ -82,14 +87,17 @@ export function Input({ label, error, style, ...props }: InputProps) {
 
 // ---------------- Chip / Badge ----------------
 export function Chip({ label, active, onPress }: { label: string; active?: boolean; onPress?: () => void }) {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <Pressable onPress={onPress} style={[s.chip, active && s.chipActive]}>
-      <Text style={[s.chipText, active && { color: '#fff' }]}>{label}</Text>
+      <Text style={[s.chipText, active && { color: colors.onPrimary }]}>{label}</Text>
     </Pressable>
   );
 }
 
 export function Badge({ label, color, bg }: { label: string; color: string; bg: string }) {
+  const s = useStyles();
   return (
     <View style={[s.badge, { backgroundColor: bg }]}>
       <Text style={[s.badgeText, { color }]}>{label}</Text>
@@ -99,12 +107,15 @@ export function Badge({ label, color, bg }: { label: string; color: string; bg: 
 
 export function StatusBadge({ status }: { status: EventStatus }) {
   const t = useT();
-  const m = statusMeta[status];
+  const { colors } = useTheme();
+  const m = getStatusMeta(colors)[status];
   return <Badge label={t(m.label)} color={m.color} bg={m.bg} />;
 }
 
 // ---------------- Trạng thái màn hình ----------------
 export function Loading() {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <View style={s.center}>
       <ActivityIndicator size="large" color={colors.primary} />
@@ -113,6 +124,8 @@ export function Loading() {
 }
 
 export function Empty({ text, hint }: { text: string; hint?: string }) {
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <View style={s.center}>
       <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text, textAlign: 'center' }}>{text}</Text>
@@ -123,6 +136,8 @@ export function Empty({ text, hint }: { text: string; hint?: string }) {
 
 export function ErrorView({ message, onRetry }: { message: string; onRetry?: () => void }) {
   const t = useT();
+  const { colors } = useTheme();
+  const s = useStyles();
   return (
     <View style={s.center}>
       <Text style={{ color: colors.danger, textAlign: 'center', marginBottom: 12 }}>{message}</Text>
@@ -143,6 +158,7 @@ export function Page({
   onRefresh?: () => void;
   gap?: number;
 }) {
+  const { colors } = useTheme();
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.bg }}
@@ -156,14 +172,17 @@ export function Page({
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const s = useStyles();
   return <View style={[s.card, style]}>{children}</View>;
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {
+  const s = useStyles();
   return <Text style={s.sectionTitle}>{children}</Text>;
 }
 
 export function InfoRow({ label, value }: { label: string; value?: string | number | null }) {
+  const { colors } = useTheme();
   if (value === undefined || value === null || value === '') return null;
   return (
     <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -174,6 +193,8 @@ export function InfoRow({ label, value }: { label: string; value?: string | numb
 }
 
 export function StatBox({ label, value, tone }: { label: string; value: string | number; tone?: 'warn' | 'good' }) {
+  const { colors } = useTheme();
+  const s = useStyles();
   const fg = tone === 'warn' ? colors.warning : tone === 'good' ? colors.success : colors.primaryDark;
   return (
     <View style={s.stat}>
@@ -183,11 +204,13 @@ export function StatBox({ label, value, tone }: { label: string; value: string |
   );
 }
 
-export function ProgressBar({ value, max, color = colors.primary }: { value: number; max: number; color?: string }) {
+export function ProgressBar({ value, max, color }: { value: number; max: number; color?: string }) {
+  const { colors } = useTheme();
+  const fill = color ?? colors.primary;
   const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
   return (
     <View style={{ height: 8, borderRadius: 4, backgroundColor: colors.neutralSoft, overflow: 'hidden' }}>
-      <View style={{ width: `${pct}%`, height: 8, backgroundColor: color }} />
+      <View style={{ width: `${pct}%`, height: 8, backgroundColor: fill }} />
     </View>
   );
 }
@@ -211,6 +234,8 @@ export function PromptModal({
   onSubmit: (text: string) => Promise<void> | void;
 }) {
   const t = useT();
+  const { colors } = useTheme();
+  const s = useStyles();
   const [text, setText] = useState(initialValue);
   const [busy, setBusy] = useState(false);
 
@@ -237,7 +262,7 @@ export function PromptModal({
             value={text}
             onChangeText={setText}
             placeholder={placeholder}
-            placeholderTextColor="#98a2a0"
+            placeholderTextColor={colors.placeholder}
             multiline
             autoFocus
             style={[s.input, { minHeight: 90, textAlignVertical: 'top' }]}
@@ -252,7 +277,8 @@ export function PromptModal({
   );
 }
 
-const s = StyleSheet.create({
+const makeStyles = (colors: Colors, fs: (n: number) => number) =>
+  StyleSheet.create({
   btn: {
     minHeight: 48,
     borderRadius: radius.md,
@@ -265,13 +291,13 @@ const s = StyleSheet.create({
   btnText: { fontSize: 15, fontWeight: '700' },
   label: { fontSize: 13, fontWeight: '600', color: colors.text },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: radius.md,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontSize: 15,
+    fontSize: fs(15),
     color: colors.text,
   },
   error: { color: colors.danger, fontSize: 12 },
@@ -279,7 +305,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: radius.pill,
-    backgroundColor: '#fff',
+    backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -307,5 +333,10 @@ const s = StyleSheet.create({
     borderColor: colors.border,
   },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', padding: 24 },
-  modal: { backgroundColor: '#fff', borderRadius: radius.lg, padding: 18, gap: 14 },
+  modal: { backgroundColor: colors.card, borderRadius: radius.lg, padding: 18, gap: 14 },
 });
+
+function useStyles() {
+  const { colors, fs } = useTheme();
+  return useMemo(() => makeStyles(colors, fs), [colors, fs]);
+}

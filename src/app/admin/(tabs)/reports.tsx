@@ -1,7 +1,9 @@
-import { FlatList, RefreshControl, Text, View } from 'react-native';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { AdminApi } from '@/api/services';
 import { Badge, Button, Card, Chip, Empty, ErrorView, Loading } from '@/components/ui';
-import { colors, severityMeta } from '@/constants/theme';
+import { getSeverityMeta } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { ReportSeverity } from '@/types';
 import { confirmAction, showMessage } from '@/utils/dialog';
@@ -10,6 +12,8 @@ import { fmtDateTime } from '@/utils/format';
 const SEVERITIES: ReportSeverity[] = ['low', 'medium', 'high'];
 
 export default function Reports() {
+  const { colors } = useTheme();
+  const severityMeta = getSeverityMeta(colors);
   const { data, loading, error, refreshing, refresh, retry, reload } = useApi(AdminApi.reports, []);
 
   const act = async (fn: () => Promise<unknown>) => {

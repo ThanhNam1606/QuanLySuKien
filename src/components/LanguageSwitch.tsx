@@ -1,6 +1,7 @@
 import { ComponentRef, useRef, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { colors } from '@/constants/theme';
+import { Modal, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useTheme } from '@/hooks/useTheme';
+import { AppText as Text } from './AppText';
 import { Lang, useLang } from '@/i18n';
 
 const OPTIONS: { code: Lang; short: string; name: string }[] = [
@@ -13,6 +14,7 @@ const OPTIONS: { code: Lang; short: string; name: string }[] = [
  * Bấm vào thì mở danh sách VI / EN ngay bên dưới nút. Lựa chọn được lưu cho lần mở app sau.
  */
 export default function LanguageSwitch() {
+  const { colors } = useTheme();
   const lang = useLang((s) => s.lang);
   const setLang = useLang((s) => s.setLang);
   const { width } = useWindowDimensions();
@@ -45,7 +47,7 @@ export default function LanguageSwitch() {
           borderRadius: 999,
           borderWidth: 1,
           borderColor: colors.border,
-          backgroundColor: '#fff',
+          backgroundColor: colors.card,
         }}
       >
         <Text style={{ fontWeight: '800', fontSize: 13, color: colors.primaryDark }}>{current.short}</Text>
@@ -61,7 +63,7 @@ export default function LanguageSwitch() {
                 top: pos.top,
                 right: pos.right,
                 minWidth: 170,
-                backgroundColor: '#fff',
+                backgroundColor: colors.card,
                 borderRadius: 12,
                 borderWidth: 1,
                 borderColor: colors.border,

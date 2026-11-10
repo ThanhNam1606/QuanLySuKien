@@ -1,11 +1,13 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { AdminApi } from '@/api/services';
 import { Card, ErrorView, Loading, Page, ProgressBar, SectionTitle, StatBox } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { fmtDateTime } from '@/utils/format';
 
 export default function Dashboard() {
+  const { colors } = useTheme();
   const { data, loading, error, refreshing, refresh, retry } = useApi(AdminApi.stats, []);
   if (loading) return <Loading />;
   if (error || !data) return <ErrorView message={error} onRetry={retry} />;

@@ -1,7 +1,8 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { useRouter } from 'expo-router';
 import { Button, Card, Page } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/store/authStore';
 import { confirmAction } from '@/utils/dialog';
 
@@ -12,6 +13,7 @@ const ITEMS = [
 ];
 
 export default function More() {
+  const { colors } = useTheme();
   const router = useRouter();
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);

@@ -1,13 +1,15 @@
+import { AppText as Text } from '@/components/AppText';
 import { useState } from 'react';
-import { Text } from 'react-native';
+
 import { Link } from 'expo-router';
 import { AuthApi } from '@/api/services';
 import AuthShell from '@/components/AuthShell';
 import { Button, Input } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useT } from '@/i18n';
 
 export default function ForgotPasswordScreen() {
+  const { colors } = useTheme();
   const t = useT();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');

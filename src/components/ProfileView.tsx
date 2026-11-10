@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Switch, Text, View } from 'react-native';
+import { Switch, View } from 'react-native';
+import { AppText as Text } from '@/components/AppText';
 import { useRouter } from 'expo-router';
 import { AuthApi, refreshProfile } from '@/api/services';
 import { useApi } from '@/hooks/useApi';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/store/authStore';
 import { Role } from '@/types';
 import { confirmAction, showMessage } from '@/utils/dialog';
 import { refreshReminders } from '@/utils/reminders';
+import AppearanceSettings from './AppearanceSettings';
 import { Badge, Button, Card, Input, Page, SectionTitle } from './ui';
 import { useT } from '@/i18n';
 
@@ -18,6 +20,7 @@ const ROLE_LABEL: Record<Role, string> = {
 };
 
 export default function ProfileView() {
+  const { colors } = useTheme();
   const t = useT();
   const router = useRouter();
   const user = useAuth((s) => s.user)!;
@@ -105,12 +108,14 @@ export default function ProfileView() {
     <Page>
       <Card style={{ alignItems: 'center', paddingVertical: 20 }}>
         <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: '#fff', fontSize: 26, fontWeight: '800' }}>{user.name.trim().charAt(0).toUpperCase()}</Text>
+          <Text style={{ color: colors.onPrimary, fontSize: 26, fontWeight: '800' }}>{user.name.trim().charAt(0).toUpperCase()}</Text>
         </View>
         <Text style={{ fontSize: 19, fontWeight: '800', color: colors.text }}>{user.name}</Text>
         <Text style={{ color: colors.muted }}>{user.email}</Text>
         <Badge label={t(ROLE_LABEL[user.role])} color={colors.primaryDark} bg={colors.primarySoft} />
       </Card>
+
+      <AppearanceSettings />
 
       <Card style={{ gap: 12 }}>
         <SectionTitle>{t('Thông tin cá nhân')}</SectionTitle>
@@ -160,6 +165,7 @@ export default function ProfileView() {
 }
 
 function Row({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
+  const { colors } = useTheme();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <Text style={{ color: colors.text, flex: 1 }}>{label}</Text>

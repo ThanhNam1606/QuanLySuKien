@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { OrganizerApi } from '@/api/services';
 import EventCard from '@/components/EventCard';
 import { Button, Chip, Empty, ErrorView, Loading } from '@/components/ui';
-import { colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useApi } from '@/hooks/useApi';
 import { EventStatus } from '@/types';
 
@@ -18,6 +18,7 @@ const FILTERS: { label: string; match?: EventStatus[] }[] = [
 ];
 
 export default function MyEvents() {
+  const { colors } = useTheme();
   const router = useRouter();
   const [filter, setFilter] = useState(0);
   const { data, loading, error, refreshing, refresh, retry } = useApi(OrganizerApi.events, []);
