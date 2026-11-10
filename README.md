@@ -3,6 +3,7 @@
 #Link Báo cáo BTL: https://1drv.ms/w/c/a285388a2c142c54/IQDaOZcNHeoQT6UhNLrMxYx7AZ8iwTPtJuljO7pRU5qmp0U?e=1d8xtg
 # LINK VIDEO:
 https://www.image2url.com/r2/default/videos/1793945579314-2237c3cf-dec5-4489-87dd-e3cce70f1024.mp4
+# LINK VIDEO DEMO: https://www.image2url.com/r2/default/videos/1794295069980-159e01a1-b7c0-428f-8cf8-0671a00f3be8.mp4
 # EventApp – Ứng dụng quản lý sự kiện (React Native + Expo + axios mock API + Google AdMob)
 Ứng dụng di động quản lý và tham gia sự kiện, dành cho 3 vai trò: **Người tham gia**, **Ban tổ chức** và **Admin**.
 Toàn bộ dữ liệu chạy bằng **mock API** (axios + adapter giả lập), không cần backend. Ứng dụng đã tích hợp
