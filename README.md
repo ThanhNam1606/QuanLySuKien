@@ -1,9 +1,9 @@
 # Link bảng phân công công việc: 
 https://docs.google.com/spreadsheets/d/1Z5RuK3PEojDrAcqP5MCEOwZq8K6NWtkL/edit?usp=sharing&ouid=101868398609328138597&rtpof=true&sd=true
 
-#Link Figma: https://www.figma.com/design/EyOoqMDriwl6GClS2xBSlQ/Untitled?node-id=0-1&t=Sme17LHpOlXK4oAn-1
+# Link Figma: https://www.figma.com/design/EyOoqMDriwl6GClS2xBSlQ/Untitled?node-id=0-1&t=Sme17LHpOlXK4oAn-1
 # EventApp – Ứng dụng quản lý sự kiện
-#Link Báo cáo BTL: https://1drv.ms/w/c/a285388a2c142c54/IQDaOZcNHeoQT6UhNLrMxYx7AZ8iwTPtJuljO7pRU5qmp0U?e=1d8xtg
+# Link Báo cáo BTL: https://1drv.ms/w/c/a285388a2c142c54/IQDaOZcNHeoQT6UhNLrMxYx7AZ8iwTPtJuljO7pRU5qmp0U?e=1d8xtg
 # LINK VIDEO:
 https://www.image2url.com/r2/default/videos/1793945579314-2237c3cf-dec5-4489-87dd-e3cce70f1024.mp4
 # LINK VIDEO DEMO: https://www.image2url.com/r2/default/videos/1794295069980-159e01a1-b7c0-428f-8cf8-0671a00f3be8.mp4
